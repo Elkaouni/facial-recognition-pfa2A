@@ -572,8 +572,9 @@ def create_menu( given_username):
     
 ##### Verify given password in login page    
 
-def verify_password(given_username, entry):
+def verify_password(username_entry, entry):
     given_password=entry.get()
+    given_username=username_entry.get()
     if(given_password ==""):
         messagebox.showinfo('Result', 'Please provide a password')
     else:
@@ -583,16 +584,19 @@ def verify_password(given_username, entry):
         sql = """SELECT password FROM `authorized_user` WHERE `username` = %s"""
         mycursor.execute(sql, (given_username,))
         password = mycursor.fetchone()
-        password = ''+''.join(password)
-        if(given_password != password):
-            messagebox.showinfo('Result', 'Invalid password')
+        if(password == None):
+            messagebox.showinfo('Result', 'Invalid username')
         else:
-            login.destroy()
-            #home = Tk()
-            #home.title("Feel me APP")
-            #home.geometry("500x350")
-            #home.config(background="#A1C6E7")
-            create_menu( given_username)
+            password = ''+''.join(password)
+            if(given_password != password):
+                messagebox.showinfo('Result', 'Invalid password')
+            else:
+                login.destroy()
+                #home = Tk()
+                #home.title("Feel me APP")
+                #home.geometry("500x350")
+                #home.config(background="#A1C6E7")
+                create_menu( given_username)
             
         
         
@@ -634,7 +638,7 @@ def open_login(username):
     #Button(w, text="Detect the face", width=20, height=2, bg='#A1C6E7', fg='white', command=train_classifier).place(x=100, y=375)
     
     #### Double verification layer: verify password
-    Button(login, text="Login", width=20, height=2, bg='#A1C6E7', fg='white', command=lambda given_username=username, entry=e4 : verify_password(given_username, entry)).place(x=100, y=345)
+    Button(login, text="Login", width=20, height=2, bg='#A1C6E7', fg='white', command=lambda given_username=e3, entry=e4 : verify_password(given_username, entry)).place(x=100, y=345)
     
     login.mainloop()
     
@@ -663,7 +667,8 @@ def new_user():
 def have_already_account():
     username = detect_face()
     if(username=="UNKNOWN"):
-        messagebox.showinfo('Result', 'You are not an authorized user, please register first')
+        #messagebox.showinfo('Result', 'You are not an authorized user, please register first')
+        open_login(username)
     else:
         #### Double verification layer: verify password
         #open_login(username)

@@ -17,64 +17,85 @@ import os
 
 
 
+
+
+#####################################################################################################
+################################### Global Variables' Declaration ###################################
+#####################################################################################################
+
+##### Paths that will be used in the application. Before executing, make sure to change these variables
+
 full_path = "C:\\Users\\wichy\\Desktop\\ENSIAS 2A\\PFA-reconnaissance-faciale\\Face_recognizer"
 classifer_path= "classifier.xml"
 faceCascade_path= "haarcascade_frontalface_default.xml"
 user_pfp_path= "C:\\Users\\wichy\\Desktop\\ENSIAS 2A\\PFA-reconnaissance-faciale\\images\\user.png"
 
-data_max_img=50
+
+
+##### Database informations
+
 db_user="root"
 db_pwd="root"
 db_name="feel_me"
 
+ 
+    
+##### Number of images to use to train model for authentification
 
-# we load the trained model saved in the xml file
-def load_model():
-    model = model_from_json(open("model1/model.json", "r").read())
-    model.load_weights('model1/model.h5') 
-    face_haar_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')    
-    return model
+data_max_img=50
 
 
-#to disable X button
+
+
+#####################################################################################################
+######################### Main Menu & Live Stream Fonctions (from version 1)#########################
+#####################################################################################################
+
+
+##### To disable X button in the live stream
+
 def disable_event():
    pass
 
 
-def show_quote(i): #('angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral')
+
+
+##### Connection to database
+
+def connect_to_database():
     mydb=mysql.connector.connect(
                 host="localhost",
                 user=db_user,
                 passwd=db_pwd,
                 database=db_name
             )
-       
-    if i==0 :
-        #quote = "You're feeling angry?"
+    return mydb
+
+
+
+##### Getting quote from database depending on the emotion 
+
+def show_quote(i):                #('angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral')
+    mydb=connect_to_database()
+    if i==0 : 
         emo="You seem pretty angry. Remember, "
         emotion = "where anger=1"
     elif i==1 :
-        #quote = "You're feeling disgusted?"
         emo="Feelin disgusted? Remember, "
         emotion = "where disgust=1"
     elif i==2 :
-        #quote = "You're feeling fear?"
-        emo="Is something worrying you i sense fear... Don't worry, "
+        emo="Is something worrying you? I mostly sensed fear... Don't worry, "
         emotion = "where fear=1"
     elif i==3 :
-        #quote = "You're feeling happy?"
         emo="You seem quite happy! Remember, "
-        emotion = "where happiness=1=1=1"
+        emotion = "where happiness=1"
     elif i==4 :
-        #quote = "You're feeling sad?"
         emo="Please don't be sad. "
-        emotion = "where sadness=1=1"
+        emotion = "where sadness=1"
     elif i==5 :
-        #quote = "You're feeling surprise?"
         emo="You were surprised today. "
         emotion = "where surprise=1"
     else :
-        #quote = "You're feeling neutral?"
         emo="Random quote of today:\n"
         emotion = ""
     
@@ -87,7 +108,11 @@ def show_quote(i): #('angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'ne
 
 
 
+##### Start Live Stream
+
 def openLiveStream(window):
+    
+    #####  declare variables to stock the total rate of emotions
     global happiness
     global neutrality
     global fear
@@ -104,6 +129,9 @@ def openLiveStream(window):
     surprise=0
     disgust=0
     
+    
+    ##### Launch live stream window
+    
     window.destroy()
     root = tk.Tk()
     #root = Toplevel(window)
@@ -111,11 +139,16 @@ def openLiveStream(window):
     root.geometry("1180x650")
     root.configure(bg="#d4f6ff")   
     
+    
+    ##### Load model for emotion recognation
+    
     model = model_from_json(open("model1/model.json", "r").read())
     model.load_weights('model1/model.h5') 
     face_haar_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')    
 
 
+    ##### Re-Open Main menu after closing live streamm
+    
     def openMenu():
         root.destroy()
         global window 
@@ -128,6 +161,9 @@ def openLiveStream(window):
         label_title = Label(window, text="Welcome to Feel Me App", font=("Helvetica", 30), bg='#d4f6ff', fg='black')
         label_title.pack()
 
+        
+        ##### Frame 1 for logo (horizontal layout)
+        
         frame1 = tk.Frame(master=window, width=50, height=100, bg="#d4f6ff")
         frame1.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)
 
@@ -138,10 +174,15 @@ def openLiveStream(window):
         label.pack()
         label.place(anchor='center', relx=0.5, rely=0.5)
 
+        
+        ##### Frame 2 for description, quote and start button (verticallayout)
+        
         frame2 = tk.Frame(master=window, width=600, bg="#d4f6ff")
         frame2.pack(fill=tk.Y, side=tk.RIGHT)
-        #frame2.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)
 
+        
+        ##### Frame 21 for description
+        
         frame21 = tk.Frame(master=frame2, width=600, height=150, bg="#d4f6ff")
         frame21.pack(fill=tk.BOTH, side=tk.TOP, expand=True)
 
@@ -151,24 +192,20 @@ def openLiveStream(window):
         text.pack()
         text.place(anchor='n', relx=0.5, rely=0.5)
 
-
+        
+        ##### Frame 22 for Start button
+        
         frame22 = tk.Frame(master=frame2, width=600, height=30, bg="#d4f6ff")
         frame22.pack(fill=tk.BOTH, side=tk.BOTTOM, expand=True)
 
         y_button = Button(frame22, text="Start now", font=("Courrier", 25), bg='#0F094A', fg='#ffffff', command = openLiveStream)
         y_button.pack(pady=25)
 
+        
+        ##### Frame for quote
+        
         frame23 = tk.Frame(master=frame2, width=600, height=10, bg="#d4f6ff")
         frame23.pack(fill=tk.BOTH, side=tk.TOP, expand=True)
-
-        #('angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral')
-        #print('---- Angry: '+str(anger)+'%')
-        #print('---- Disgust: '+str(disgust)+'%')
-        #print('---- Fear: '+str(fear)+'%')
-        #print('---- Happy: '+str(happiness)+'%')
-        #print('---- Sad: '+str(sadness)+'%')
-        #print('---- Surprise: '+str(surprise)+'%')
-        #print('---- Neutral: '+str(neutrality)+'%')
             
         list_feelings = [ anger, disgust, fear, happiness, sadness, surprise, neutrality]
         max_feel = max(list_feelings)
@@ -179,12 +216,15 @@ def openLiveStream(window):
         quoting.pack()
         quoting.place(anchor='center', relx=0.5, rely=0.5)
 
+        
         window.mainloop()
         
         
-    #Disable the Close Window Control Icon
+    ##### Disable the Close Window Control Icon
     root.protocol("WM_DELETE_WINDOW", disable_event)
     
+    
+    ##### Create frames for live stream window
     fr1 = tk.Frame(master=root, width=600, height=50,bg="#d4f6ff")
     fr1.pack(fill=tk.BOTH, side=tk.TOP, expand=True)
 
@@ -232,12 +272,15 @@ def openLiveStream(window):
     L1 = Label(f1, bg="white")
     L1.grid()
        
+    ##### Open Camera
     cap = cv2.VideoCapture(0)
-    #If the camera was not opened sucessfully
-    if not cap.isOpened():  
+    
+    ##### If the camera was not opened sucessfully
+    if not cap.isOpened():      
         print("Cannot open camera")
         exit()
                
+    ##### store emotion rates to show during the live stream
     angry_rate = 0
     disgusted_rate = 0 
     fear_rate = 0 
@@ -247,33 +290,32 @@ def openLiveStream(window):
     neutral_rate = 0
             
     while True:
-        #read frame by frame and get return whether there is a stream or not
+        ##### read frame by frame and get return whether there is a stream or not
         ret, img=cap.read()
 
-        #If no frames recieved, then break from the loop
+        ##### If no frames recieved, then break from the loop
         if not ret:
             print("Can't receive frame (stream end?). Exiting ...")
             break
 
-        #Change the frame to greyscale  
+        ##### Change the frame to greyscale  
         gray_image= cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         faces_detected = face_haar_cascade.detectMultiScale(gray_image,1.32,5)
 
-        #Draw Triangles around the faces detected
+        ##### Draw rectangles around the faces detected
         for (x,y,w,h) in faces_detected:
             cv2.rectangle(img,(x,y), (x+w,y+h), (255,0,0), thickness=7)
             roi_gray=gray_image[y:y+w,x:x+h]
             roi_gray=cv2.resize(roi_gray,(48,48))
 
-            #Processes the image and adjust it to pass it to the model
+            ##### Processes the image and adjust it to pass it to the model
             image_pixels = tf.keras.preprocessing.image.img_to_array(roi_gray)
             #plt.imshow(image_pixels)
             #plt.show()
             image_pixels = np.expand_dims(image_pixels, axis = 0)
             image_pixels /= 255
 
-            #Get the prediction of the model
-            #predictions = model.predict(image_pixels)
+            ##### Get the prediction of the model
             predictions = model.predict(image_pixels)
             #print(predictions)
             max_index = np.argmax(predictions[0])
@@ -298,7 +340,7 @@ def openLiveStream(window):
             #print('---- Surprise: '+str(surprise_rate)+'%')
             #print('---- Neutral: '+str(neutral_rate)+'%')
 
-            #Write on the frame the emotion detected
+            ##### Write on the frame the emotion detected
             cv2.putText(img,emotion_prediction,(int(x), int(y)),cv2.FONT_HERSHEY_SIMPLEX,2,(0,255,0),3)
         
         
@@ -328,16 +370,20 @@ def openLiveStream(window):
 
 
 
+
+
+#####################################################################################################
+############################ Authentification Fonctions (from version 2) ############################
+#####################################################################################################
+
+
+##### Capture face to generate dataset for authentification
+
 def generate_dataset():
     #if(e1.get()=="" or e2.get()==""):
         #messagebox.showinfo('Result', 'Please provide completed details of the user')
     #else:
-    mydb=mysql.connector.connect(
-        host="localhost",
-        user="root",
-        passwd="root",
-        database="feel_me"
-        )
+    mydb=connect_to_database()
     mycursor=mydb.cursor()
     mycursor.execute("SELECT * from authorized_user")
     myresult=mycursor.fetchall()
@@ -404,7 +450,7 @@ def train_classifier():
         
     ids = np.array(ids)
     
-    # Train and save classifier
+    ##### Train and save classifier
     clf = cv2.face.LBPHFaceRecognizer_create()
     clf.train(faces,ids)
     clf.write(classifer_path)
@@ -412,24 +458,20 @@ def train_classifier():
     
     
         
+##### Detect face and authentifying it
 
 def detect_face():  
     def draw_boundary(img, classifier, scaleFactor, minNeighbors, color, text, clf):
         gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         features = classifier.detectMultiScale(gray_img, scaleFactor, minNeighbors)
-        name = "????"
+        name = "UNKNOWN"
         for (x,y,w,h) in features:
             cv2.rectangle(img, (x,y), (x+w,y+h), color, 2 )
 
             id, pred = clf.predict(gray_img[y:y+h,x:x+w])
             confidence = int(100*(1-pred/300))
             
-            mydb=mysql.connector.connect(
-                host="localhost",
-                user=db_user,
-                passwd=db_pwd,
-                database=db_name
-            )
+            mydb=connect_to_database()
             mycursor=mydb.cursor()
             mycursor.execute("select username from authorized_user where id="+str(id))
             s = mycursor.fetchone()
@@ -442,7 +484,7 @@ def detect_face():
                 cv2.putText(img, "UNKNOWN", (x,y-5), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0,0,255), 1, cv2.LINE_AA)
         return img, name
 
-    # loading classifier
+    ##### loading classifier
     faceCascade = cv2.CascadeClassifier(faceCascade_path)
 
     clf = cv2.face.LBPHFaceRecognizer_create()
@@ -455,7 +497,7 @@ def detect_face():
         img, username = draw_boundary(img, faceCascade, 1.3, 6, (255,255,255), "Face", clf)
         cv2.imshow("face Detection", img)
 
-        if cv2.waitKey(1)==13:
+        if cv2.waitKey(1)==13 or username != "UNKNOWN":
             break
     video_capture.release()
     cv2.destroyAllWindows()
@@ -465,9 +507,9 @@ def detect_face():
 
 
 
+##### Show main menu 
 
-
-def create_menu( given_username, entry):
+def create_menu( given_username):
     txt = "Welcome "+given_username +"!"
    # Label(home, text=given_username, font=("Courrier", 40), bg='#A1C6E7', fg='white').pack()
    # home.mainloop()
@@ -485,13 +527,12 @@ def create_menu( given_username, entry):
     frame1 = tk.Frame(master=window, width=50, height=100, bg="#d4f6ff")
     frame1.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)
 
-    image = Image.open(".\\images\\logo_emotions.png")
+    image = Image.open("./images/logo_emotions.png")
     photo = ImageTk.PhotoImage(image.resize((400, 400), Image.ANTIALIAS))
     label = Label(frame1, image=photo, bg='#d4f6ff')
     label.image = photo
     label.pack()
     label.place(anchor='center', relx=0.5, rely=0.5)
-
 
 
     frame2 = tk.Frame(master=window, width=600, bg="#d4f6ff")
@@ -526,18 +567,18 @@ def create_menu( given_username, entry):
 
     window.mainloop()
         
-        
+      
+
+    
+##### Verify given password in login page    
+
 def verify_password(given_username, entry):
     given_password=entry.get()
     if(given_password ==""):
         messagebox.showinfo('Result', 'Please provide a password')
     else:
-        mydb=mysql.connector.connect(
-                host="localhost",
-                user=db_user,
-                passwd=db_pwd,
-                database=db_name
-            )
+        mydb=connect_to_database()
+        
         mycursor=mydb.cursor()
         sql = """SELECT password FROM `authorized_user` WHERE `username` = %s"""
         mycursor.execute(sql, (given_username,))
@@ -551,13 +592,13 @@ def verify_password(given_username, entry):
             #home.title("Feel me APP")
             #home.geometry("500x350")
             #home.config(background="#A1C6E7")
-            create_menu( given_username, entry)
+            create_menu( given_username)
             
         
         
         
         
-        
+##### Show login page after identifying face        
 def open_login(username):
     w.destroy()
     global login
@@ -591,12 +632,16 @@ def open_login(username):
 
     #Button(w, text="Detect the face", width=20, height=2, bg='#A1C6E7', fg='white', command=generate_dataset).place(x=100, y=375)
     #Button(w, text="Detect the face", width=20, height=2, bg='#A1C6E7', fg='white', command=train_classifier).place(x=100, y=375)
+    
+    #### Double verification layer: verify password
     Button(login, text="Login", width=20, height=2, bg='#A1C6E7', fg='white', command=lambda given_username=username, entry=e4 : verify_password(given_username, entry)).place(x=100, y=345)
     
-
     login.mainloop()
     
     
+    
+##### Sign in new users
+
 def new_user():
     if(e1.get()=="" or e2.get()==""):
         messagebox.showinfo('Result', 'Please provide completed details of the user')
@@ -620,7 +665,12 @@ def have_already_account():
     if(username=="UNKNOWN"):
         messagebox.showinfo('Result', 'You are not an authorized user, please register first')
     else:
-        open_login(username)
+        #### Double verification layer: verify password
+        #open_login(username)
+        
+        #### Directly login after face recognition
+        w.destroy()
+        create_menu(username)
     #if
     #if(e2.get()==""):
         #messagebox.showinfo('Result', 'Please provide password')
@@ -628,6 +678,9 @@ def have_already_account():
                 
  
     
+    
+##### Sign page displayed when first launch of Feel me App
+
 w = Tk()
 w.title("Feel me APP")
 w.geometry("350x500")
@@ -657,7 +710,7 @@ Label(image = img, border=0, justify=CENTER).place(x=120, y=60)
 
 #Button(w, text="Detect the face", width=20, height=2, bg='#A1C6E7', fg='white', command=generate_dataset).place(x=100, y=375)
 #Button(w, text="Detect the face", width=20, height=2, bg='#A1C6E7', fg='white', command=train_classifier).place(x=100, y=375)
-Button(w, text="New user", width=20, height=2, bg='#A1C6E7', fg='white', command= new_user).place(x=100, y=345)
-Button(w, text="Have already an account", width=20, height=2, bg='#A1C6E7', fg='white', command= have_already_account).place(x=100, y=400)
+Button(w, text="Sign in", width=20, height=2, bg='#A1C6E7', fg='#385b7a', command= new_user).place(x=100, y=345)
+Button(w, text="Oh, I already an account", width=20, height=2, bg='#385b7a', fg='white', command= have_already_account).place(x=100, y=400)
 
 w.mainloop()

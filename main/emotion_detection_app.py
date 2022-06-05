@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
-
+import time
 
 
 
@@ -504,6 +504,7 @@ def detect_face():
 
         if cv2.waitKey(1)==13 or username != "UNKNOWN":
             break
+    time.sleep(1)
     video_capture.release()
     cv2.destroyAllWindows()
     return username

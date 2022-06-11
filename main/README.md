@@ -1,7 +1,7 @@
-This is the Final debugged version with a quote and a facial authentification feature.
+This is the Final debugged version with a quote and a facial authentification feature: **full_emotion_detection.py**.
+Please execute the code using Jupyter's terminal in case you encouter problems using Windows Command Line.
 
-
-Drive link to traned modals:
+Drive link to trained modals:
 https://drive.google.com/drive/folders/1RlOwIVg7b8DjbG9hjzHgHN5PmGvmzaEY?usp=sharing
 
 The modals should be put in the same directory as the project.

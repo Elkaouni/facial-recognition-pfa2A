@@ -23,8 +23,8 @@ import time
 ################################### Global Variables' Declaration ###################################
 #####################################################################################################
 
-#### Change this path:
-my_path = "C:\\Users\\wichy\\Desktop\\ENSIAS 2A\\PFA-reconnaissance-faciale"
+#### global project path.
+my_path = os.getcwd()
 
 
 
@@ -186,6 +186,10 @@ def openLiveStream(window, username):
     model = model_from_json(open("model1/model.json", "r").read())
     model.load_weights('model1/model.h5') 
     face_haar_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')    
+
+    #model = model_from_json(open("model2/model2_30_100.json", "r").read())
+    #model.load_weights('model2/model2_30_100.h5') 
+    #face_haar_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')    
 
 
     ##### Re-Open Main menu after closing live streamm

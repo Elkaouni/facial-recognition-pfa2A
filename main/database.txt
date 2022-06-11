@@ -1,0 +1,125 @@
+--users table script
+
+
+
+
+
+
+--quotes table script
+
+create table quotes (  
+    quote     varchar(500) primary key, 
+    happiness bit default 0, 
+    neutral   bit default 0, 
+    sadness   bit default 0, 
+    anger     bit default 0, 
+    surprise  bit default 0, 
+    disgust   bit default 0, 
+    fear      bit default 0 );
+
+
+---------For happiness----------------------------------------------------------------
+insert into quotes(quote, happiness) values
+("Happiness is not the absence of problems, it’s the ability to deal with them.",1),
+("Happiness is not being pained in body or troubled in mind.",1),
+("The secret of happiness is to find a congenial monotony.",1),
+("Happiness is not an ideal of reason, but of imagination.",1),
+("To be without some of the things you want is an indispensable part of happiness.",1),
+("There is no path to happiness; happiness is the path.",1),
+("Don't worry. Be happy. Stay happy.",1),
+("Happiness is a journey, not a destination. You're doing well.",1),
+("Happiness is a warm puppy.",1),
+("Sanity and happiness are an impossible combination.",1)
+;
+
+
+---------for sadness----------------------------------------------------------------
+insert into quotes(quote, sadness) values
+("Don’t give up. Don’t ever give up.",1),
+("Failures are expected by losers, ignored by winners.",1),
+("The sky is everywhere, it begins at your feet.",1),
+("Cheer up, my dear. After every storm comes the sun. Happiness is waiting for you ahead.",1),
+("What doesn’t kill you makes you stronger.",1),
+("Sometimes your heart needs more time to accept what your mind already knows.",1),
+("Turn adversity into triumph.",1),
+("You’re braver than you believe and stronger than you seem, and smarter than you think.",1),
+("Be positive. Stay happy and don’t let the negativity of the world get you down.",1),
+("Chin up buttercup, everything’s gonna be ok.",1)
+;
+
+
+---------for fear----------------------------------------------------------------
+insert into quotes(quote, fear) values
+("Fear is the path to the Dark Side. Fear leads to anger, anger leads to hate, hate leads to suffering.",1),
+("The brave man is not he who does not feel afraid, but he who conquers that fear.",1),
+("Decide that you want it more than you are afraid of it.",1),
+("Nothing in life is to be feared. It is only to be understood.",1),
+("The key to change... is to let go of fear.",1),
+("We should all start to live before we get too old. Fear is stupid. So are regrets.",1),
+("Have no fear of perfection--you'll never reach it.",1),
+("Don't let the fear of striking out hold you back.",1),
+("One of the greatest discoveries a man makes, one of his great surprises, is to find he can do what he was afraid he couldn't do.",1),
+("He who is not everyday conquering some fear has not learned the secret of life.",1)
+;
+
+
+---------for anger----------------------------------------------------------------
+insert into quotes(quote, anger) values
+("Never go to bed mad. Stay up and fight.",1),
+("Angry people are not always wise. So calm down, and think wisely.",1),
+("The best fighter is never angry.",1),
+("Speak when you are angry and you will make the best speech you will ever regret.",1),
+("Do not let your anger lead to hatred, as you will hurt yourself more than you would the other.",1),
+("When angry, count four. When very angry, swear.",1),
+("Your mind is like this water my friend, when it is agitated it becomes difficult to see. But if you allow it to settle, the answer becomes clear.",1),
+("You are not the anger, you are the awareness behind the anger. Realize this and the anger
+will no longer control you.",1),
+("Patience and empathy are anger’s mortal enemies.",1),
+("Calm is the best revenge.",1)
+;
+
+
+---------for disgust----------------------------------------------------------------
+insert into quotes(quote, anger) values
+("If only closed minds came with closed mouthes.",1),
+("Sameness is the mother of disgust, Variety the cure.",1),
+("The further a society drifts from the truth, the more it will hate those that speak it.",1),
+("Disgust shadows desire. Another life is never safely envied.",1),
+("The better you feel about yourself, the less you feel the need to show off.",1),
+("All is disgust when a man leaves his own nature and does what is unfit.",1)
+;
+
+
+---------for surprise----------------------------------------------------------------
+insert into quotes(quote, surprise) values
+("The secret to humor is surprise.",1),
+("Surprise is the greatest gift which life can grant us.",1),
+("A good, sympathetic review is always a wonderful surprise.",1),
+("If you don't take an opponent serious, they surprise you.",1),
+("Art must take reality by surprise.",1),
+("Surprise is key in all art.",1),
+("Expect nothing. Live frugally on surprise.",1),
+("Whoever can surprise well must conquer.",1),
+("It's always fun to be the underdog and surprise people. It certainly puts less pressure on you.",1),
+("A sudden bold and unexpected question doth many times surprise a man and lay him open.",1)
+;
+
+
+
+--sessions'history
+create table history_emotions (
+id             int         primary key,
+username       varchar(50) not null,
+session_start  date        not null default 0,
+session_end    date        not null default 0,
+rate_happy     float       not null default 0,
+rate_surprise  float       not null default 0,
+rate_sad       float       not null default 0,
+rate_fear      float       not null default 0,
+rate_disgust   float       not null default 0,
+rate_anger     float       not null default 0,
+rate_neutral   float       not null default 0
+)
+
+
+
